@@ -2,7 +2,7 @@ param($resourceGroup, $appName, $keyName = "default")
 
 # Get publishing credentials and create authorization header
 $publishCredentials = Invoke-AzureRmResourceAction -ResourceGroupName $resourceGroup -ResourceType "Microsoft.Web/sites/config" -ResourceName "$appName/publishingcredentials" -Action list -ApiVersion 2015-08-01 -Force
-$authorization = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $publish.Properties.PublishingUserName, $publishCredentials.Properties.PublishingPassword)))
+$authorization = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $publishCredentials.Properties.PublishingUserName, $publishCredentials.Properties.PublishingPassword)))
 
 # Get access token for Kudu API
 $accessToken = Invoke-RestMethod -Uri "https://$appName.scm.azurewebsites.net/api/functions/admin/token" -Headers @{Authorization=("Basic {0}" -f $authorization)} -Method GET
